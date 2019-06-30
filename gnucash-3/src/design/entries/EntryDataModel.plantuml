@@ -1,0 +1,30 @@
+@startuml
+
+class Account {
+}
+
+enum EntryType {
+	Credit
+	Debit
+}
+
+
+
+class Entry {
+	Number amount
+	EntryType type	
+	String description
+}
+
+class DoubleEntry {
+	String description
+	Number transactionId
+	Date postedAt	
+}
+
+Entry "1" *-- "1" Account : contains
+
+DoubleEntry "1" *-- "1" Entry : main
+DoubleEntry "1" *-- "many" Entry : split
+
+@enduml

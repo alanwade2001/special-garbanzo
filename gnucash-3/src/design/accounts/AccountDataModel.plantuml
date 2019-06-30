@@ -1,0 +1,15 @@
+@startuml
+
+class Account {
+	String name
+	String description
+	
+	
+}
+
+
+
+Account "Parent" *--  "Children" Account : "contains"
+
+
+@enduml
