@@ -9,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ActiveProfiles("dev")
 @ExtendWith(SpringExtension.class)
 @DataJpaTest(showSql = true)
-class AccountEntityRepositoryTest {
+class AccountRepositoryTest {
 	
 	@Autowired
 	private AccountRepository repository;
@@ -25,25 +27,30 @@ class AccountEntityRepositoryTest {
 		Account saved = repository.save(account);
 		
 		assertNotNull(saved.getId());
-		
+		assertEquals(account.getName(), saved.getName());
+		assertEquals(account.getDescription(), saved.getDescription());
 	}
 	
 	@Test
 	void saveAccountEntityWithParent() {
 		Account parent = new Account("test02-parent", "test02 description");
 		
-		parent = repository.save(parent);
+		Account savedparent = repository.save(parent);
 		
-		assertNotNull(parent.getId());
+		assertNotNull(savedparent.getId());
+		assertEquals(parent.getName(), savedparent.getName());
+		assertEquals(parent.getDescription(), savedparent.getDescription());
 		
 		Account child = new Account("test02-childt", "child description");
-		child.setParent(parent);
+		child.setParent(savedparent);
 		
-		Account saved = repository.save(child);
+		Account savedChild = repository.save(child);
+		assertEquals(child.getName(), savedChild.getName());
+		assertEquals(child.getDescription(), savedChild.getDescription());
 		
-		assertNotNull(saved.getId());
-		assertNotNull(saved.getParent());
-		assertEquals(parent.getId(), saved.getParent().getId());
+		assertNotNull(savedChild.getId());
+		assertNotNull(savedChild.getParent());
+		assertEquals(savedparent.getId(), savedChild.getParent().getId());
 		
 	}
 	

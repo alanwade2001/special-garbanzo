@@ -2,6 +2,7 @@ package com.gnu.gnucash.accounts;
 
 import org.springframework.hateoas.ResourceSupport;
 
+
 public class AccountResource extends ResourceSupport {
 
 	private String name;

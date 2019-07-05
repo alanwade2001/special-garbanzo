@@ -8,14 +8,17 @@ import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping(path="/accounts", consumes="application/*")
 @ExposesResourceFor(value = Account.class)
 public class AccountController {
 	
@@ -42,7 +45,7 @@ public class AccountController {
 	}
 	
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<AccountResource> getAccount(@PathVariable("Id") Long id )
+	public ResponseEntity<AccountResource> getAccount(@PathVariable("id") Long id )
 	{
 		Account entity = service.getOne(id);
 		AccountResourceAssembler assembler = new AccountResourceAssembler();
@@ -52,7 +55,7 @@ public class AccountController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<AccountResource> newAccount( AccountResource resource )
+	public ResponseEntity<AccountResource> newAccount( @RequestBody AccountResource resource )
 	{
 		Account entity = new Account();
 		entity.setDescription(resource.getDescription());
@@ -64,12 +67,35 @@ public class AccountController {
 		AccountResource converted = assembler.toResource(entity);
 		
 		Link link = entityLinks.linkToSingleResource(Account.class, entity.getId());
-
+		
 		final URI uri = URI.create(link.getHref()); 
 		
 		
         return ResponseEntity.created(uri).body(converted);
 	}
 	
-
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<?> deleteAccount(@PathVariable("id") Long id )
+	{
+		service.deleteAccount(id);
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	
+	@PutMapping(path = "/{id}")
+	public ResponseEntity<AccountResource> putAccount(@PathVariable("id") Long id, @RequestBody AccountResource resource )
+	{
+		Account entity = new Account();
+		entity.setDescription(resource.getDescription());
+		entity.setName(resource.getName());
+		entity.setId(id);
+		
+		Account savedAccount = service.saveAccount(entity);
+		
+		AccountResourceAssembler assembler = new AccountResourceAssembler();
+		AccountResource savedResource = assembler.toResource(savedAccount);
+		
+		return ResponseEntity.ok(savedResource);
+	}
 }

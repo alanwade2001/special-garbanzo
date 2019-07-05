@@ -34,12 +34,12 @@ public class DoubleEntryController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Resources<DoubleEntryResource>> getAccounts() {
+	public ResponseEntity<Resources<DoubleEntryResource>> getDoubleEntries() {
 		
-		List<DoubleEntry> accounts = service.findAll();
+		List<DoubleEntry> doubleEntries = service.findAll();
 		
 		DoubleEntryResourceAssembler assembler = new DoubleEntryResourceAssembler();		
-		List<DoubleEntryResource> resourceList = assembler.toResources(accounts);
+		List<DoubleEntryResource> resourceList = assembler.toResources(doubleEntries);
 		Resources<DoubleEntryResource> resources = new Resources<>(resourceList);
 		
 		return ResponseEntity.ok(resources);
@@ -56,7 +56,7 @@ public class DoubleEntryController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<DoubleEntryResource> newAccount( DoubleEntryResource resource )
+	public ResponseEntity<DoubleEntryResource> newDoubleEntry( DoubleEntryResource resource )
 	{
 		DoubleEntry entity = new DoubleEntry();
 		entity.setPostedAt(resource.getPostedAt());
@@ -69,7 +69,8 @@ public class DoubleEntryController {
 		DoubleEntryResource converted = assembler.toResource(entity);
 		
 		Link link = entityLinks.linkToSingleResource(DoubleEntry.class, entity.getId());
-
+		converted.add(link);
+		
 		final URI uri = URI.create(link.getHref()); 
 		
 		

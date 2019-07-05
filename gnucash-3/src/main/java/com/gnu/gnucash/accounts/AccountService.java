@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 public class AccountService {
@@ -16,6 +17,16 @@ public class AccountService {
 	}
 
 	public Account newAccount(Account account) {
+		// check for mandatory fields
+		Assert.notNull(account, "account");
+		Assert.notNull(account.getName(), "account name");
+		
+		// check if name exists already
+		if( repository.findOneByName( account.getName()).isPresent() == true )
+		{
+			throw new RuntimeException("account name is not unique");
+		}
+		
 		return repository.save(account);
 	}
 
@@ -50,10 +61,16 @@ public class AccountService {
 				}
 				
 				repository.saveAll(account.getChildren());
-			}			
+			}
+			
+			repository.deleteById(accountId);
+		}
+		else
+		{
+			throw new RuntimeException("Account not found. Id = " + accountId);
 		}
 
-		repository.deleteById(accountId);
+		
 	}
 
 	public Account moveAccount(Long accountId, Long newParentId) {
@@ -84,5 +101,11 @@ public class AccountService {
 	
 	public List<Account> findAll() {
 		return repository.findAll();
+	}
+
+	public Account saveAccount(Account account) {
+		
+		return repository.save(account);
+		
 	}
 }

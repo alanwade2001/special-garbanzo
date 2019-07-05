@@ -5,30 +5,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.core.ControllerEntityLinks;
 import org.springframework.hateoas.mvc.ControllerLinkBuilderFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 
+@ActiveProfiles("dev")
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
 class AccountControllerTest {
 
 	@Mock
@@ -39,14 +37,12 @@ class AccountControllerTest {
 	
 	private AccountController controller;
 	
-	@Before
-	public void setupClass() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-	}
 	
 	@BeforeEach
 	public void setup() {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+		
 		ControllerLinkBuilderFactory f = new ControllerLinkBuilderFactory();
 		ControllerEntityLinks entityLinks = new ControllerEntityLinks(Arrays.asList(AccountController.class), f);
 		controller = new AccountController(entityLinks, service);
@@ -97,8 +93,26 @@ class AccountControllerTest {
 		
 		ResponseEntity<AccountResource> response = controller.newAccount(resource);
 		
-		assertEquals(201, response.getStatusCodeValue());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		
-		assertEquals("/accounts/1", response.getHeaders().getLocation().toString());
+		assertEquals("http://localhost/accounts/1", response.getHeaders().getLocation().toString());
 	}
+	
+	@Test
+	void testDeleteAccount() {
+		ResponseEntity<?> result = controller.deleteAccount(1L);
+		
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+	}
+	
+	@Test
+	void testPutAccount() {
+		AccountResource resource = new AccountResource();
+		resource.setName("putAccount");
+		
+		ResponseEntity<AccountResource> response = controller.putAccount(1L, resource);
+		
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+	
 }
