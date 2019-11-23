@@ -3,6 +3,7 @@ package io.gnucash.cloud.accounts;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,9 +18,10 @@ public class AccountsController {
 
 	private final AccountsControllerService service;
 	
+	@GetMapping
 	public ResponseEntity<List<Account>> getAccounts() {
 		List<Account> accounts = service.getAccounts();
-		
+				
 		return ResponseEntity.ok(accounts);
 	}
 
