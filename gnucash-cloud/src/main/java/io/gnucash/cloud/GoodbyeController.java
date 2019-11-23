@@ -12,7 +12,7 @@ public class GoodbyeController {
 	
 	@GetMapping
 	public String goodbye() {
-		return "goodbye";
+		return "goodbye 2";
 	}
 
 }
