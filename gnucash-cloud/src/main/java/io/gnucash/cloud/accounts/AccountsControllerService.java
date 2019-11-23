@@ -26,6 +26,8 @@ public class AccountsControllerService {
 		Iterable<AccountEntity> acceIter = service.getAccounts();
 		
 		ModelMapper mapper = new ModelMapper();
+		
+		@SuppressWarnings("serial")
 		Type listType = new TypeToken<List<Account>>() {}.getType();
 		
 		List<Account> accs = mapper.map(acceIter, listType);
