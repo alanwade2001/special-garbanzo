@@ -2,6 +2,7 @@ package io.gnucash.cloud.transactions;
 
 import java.util.List;
 
+import org.apache.http.client.HttpResponseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,15 @@ public class TransactionsController {
 	
 	@GetMapping
 	@ResponseStatus(code = HttpStatus.OK)
-	public List<Transaction> getTransactions() {
-		return service.getTransactions();
+	public List<Transaction> getTransactions() throws HttpResponseException {
+		try
+		{
+			return service.getTransactions();
+		}
+		catch(Exception x)
+		{
+			throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.value(), x.getMessage());
+		}
 	}
 
 }
