@@ -18,4 +18,8 @@ public class AccountEntityService {
 		return repo.save(entity);
 	}
 
+	public AccountEntity getAccount(Long lid) {
+		return repo.findById(lid).get();
+	}
+
 }

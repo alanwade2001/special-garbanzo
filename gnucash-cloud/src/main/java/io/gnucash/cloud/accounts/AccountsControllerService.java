@@ -45,4 +45,14 @@ public class AccountsControllerService {
 		return createdAccount;
 	}
 
+	public Account getAccount(String id) {
+		Long lid = Long.valueOf(id);
+		AccountEntity entity = service.getAccount(lid);
+		
+		ModelMapper mapper = new ModelMapper();
+		Account account = mapper.map(entity, Account.class);
+		
+		return account;
+	}
+
 }
