@@ -14,4 +14,8 @@ public class AccountEntityService {
 		return repo.findAll();
 	}
 
+	public AccountEntity createAccount(AccountEntity entity) {
+		return repo.save(entity);
+	}
+
 }

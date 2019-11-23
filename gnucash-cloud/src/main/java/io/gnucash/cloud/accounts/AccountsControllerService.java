@@ -33,4 +33,16 @@ public class AccountsControllerService {
 		return accs;
 	}
 
+	public Account createAccount(Account account) {
+		
+		ModelMapper mapper = new ModelMapper();
+		AccountEntity entity = mapper.map(account, AccountEntity.class);
+		
+		AccountEntity created = service.createAccount(entity);
+		
+		Account createdAccount = mapper.map(created, Account.class);
+		
+		return createdAccount;
+	}
+
 }
