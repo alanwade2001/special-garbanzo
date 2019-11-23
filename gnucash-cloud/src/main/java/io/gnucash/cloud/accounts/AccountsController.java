@@ -38,7 +38,7 @@ public class AccountsController {
 	public ResponseEntity<?> createAccount(UriComponentsBuilder builder, @RequestBody Account account) {
 		Account created = service.createAccount(account);
 		
-		URI location = builder.path("accounts").path(created.getId()).build().toUri();
+		URI location = builder.path("/accounts/").path(created.getId()).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 	
